@@ -1,0 +1,14 @@
+---
+title: "613FinalPJ"
+author: "Ting Yi Chuang"
+date: "2024-04-11"
+output: html_document
+---
+
+
+```{r}
+customer_data <- read_csv("customer_data.csv")
+summary(customer_data)
+str(customer_data)
+```
+
