@@ -1,6 +1,6 @@
 ---
 title: "613FinalPJ"
-author: "Ting Yi Chuang"
+author: "Ting Yi Chuang, Yen Chun Lin"
 date: "2024-04-11"
 output: html_document
 ---
@@ -104,4 +104,40 @@ summary(anova_result2)
 
 plot(anova_result2)
 ```
+
+
+```{r}
+library(data.table)
+customer <- fread("customer_data.csv")
+dim(customer)
+typeof(customer)
+str(customer)
+customer[, .(id, age, gender, education, region)]
+```
+
+
+```{r}
+customer_list<-list(customer)
+map_int(customer_list,nrow)
+map_int(customer, ~length(unique(.)))
+customer[, .(id, age, gender,income, education, region,purchase_frequency,purchase_amount)]
+```
+
+
+```{r}
+customer$income<- as.numeric(as.character(customer$income))
+mean_income<-mean(customer$income, na.rm = TRUE)
+cat("Income Mean:", mean_income, "\n")
+customer$purchase_amount<-as.numeric(as.character(customer$purchase_amount))
+mean_purchase<-mean(customer$purchase_amount, na.rm = TRUE)
+cat("Purchase Mean:", mean_purchase, "\n")
+```
+
+
+```{r}
+customer_master<-customer[education=="Masters"]
+customer_master
+customer_master[, .(gender, income, purchase_amount)][income >27516.27 & purchase_amount > 9634.791 & gender == "Female"]
+```
+
 
