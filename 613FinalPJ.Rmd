@@ -7,8 +7,101 @@ output: html_document
 
 
 ```{r}
+library(tidyverse)
 customer_data <- read_csv("customer_data.csv")
+customer_data_tbl <- as_tibble(customer_data)
+head(customer_data)
+head(customer_data_tbl)
 summary(customer_data)
-str(customer_data)
+str(customer_data_tbl)
+```
+```{r}
+customer_data_tbl <- customer_data_tbl %>%
+  mutate(
+    gender = as.factor(gender),
+    education = as.factor(education),
+    region = as.factor(region),
+    loyalty_status = as.factor(loyalty_status),
+    purchase_frequency = as.factor(purchase_frequency),
+    product_category = as.factor(product_category),
+    promotion_usage = as.factor(promotion_usage)
+  )
+
+str(customer_data_tbl)
+```
+```{r}
+customer_data_tbl %>%
+  summarise(
+    average_age = mean(age, na.rm = TRUE),
+    median_income = median(income, na.rm = TRUE),
+    average_purchaseamount = mean(purchase_amount, na.rm = TRUE)
+  )
+
+customer_data_tbl %>%
+  count(gender)
+
+customer_data_tbl %>%
+  group_by(education) %>%
+  summarise(average_income = mean(income, na.rm = TRUE))
+```
+
+
+```{r}
+library(ggplot2)
+
+# Plotting income distribution by gender
+ggplot(customer_data_tbl, aes(x = income, fill = gender)) +
+  geom_histogram(bins=10, alpha=0.7, color="black") +
+  labs(title = "Income Distribution by Gender",
+       x = "Income", 
+       y = "Count") +
+  theme_minimal()
+
+# Satisfaction score by loyalty status
+ggplot(customer_data_tbl, aes(x = loyalty_status, y = satisfaction_score, fill = loyalty_status)) +
+  geom_boxplot() +
+  labs(title = "Customer Satisfaction by Loyalty Status", 
+       x = "Loyalty Status", 
+       y = "Satisfaction Score") +
+  theme_minimal()
+
+# Plotting purchase amounts by product category
+ggplot(customer_data_tbl, aes(x = product_category, y = purchase_amount, fill = product_category)) +
+  geom_boxplot() +
+  labs(title = "Purchase Amount by Product Category", 
+       x = "Product Category", 
+       y = "Purchase Amount")
+
+```
+
+- $H_0: There is no difference in satisfaction scores between different loyalty status groups.$
+
+- $H_a: There is a difference in satisfaction scores between different loyalty status groups.$
+
+```{r}
+anova_result <- aov(satisfaction_score ~ loyalty_status, data = customer_data_tbl)
+summary(anova_result)
+
+plot(anova_result)
+```
+- $H_0: There is no relationship between income and the purchase amount of customers.$
+
+- $H_a: Higher income customers spend more on purchases than lower income customers.$
+```{r}
+anova_result1 <- aov(income ~ purchase_amount, data = customer_data_tbl)
+summary(anova_result1)
+
+plot(anova_result1)
+```
+
+- $H_0: The product category does not influence the average purchase amount..$
+
+- $H_a: The product category influences the average purchase amount.$
+
+```{r}
+anova_result2 <- aov(purchase_amount ~ product_category, data = customer_data_tbl)
+summary(anova_result2)
+
+plot(anova_result2)
 ```
 
