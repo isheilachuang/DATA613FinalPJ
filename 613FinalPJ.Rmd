@@ -16,6 +16,8 @@ head(customer_data_tbl)
 summary(customer_data)
 str(customer_data_tbl)
 ```
+
+
 ```{r}
 customer_data_tbl <- customer_data_tbl %>%
   mutate(
@@ -30,6 +32,8 @@ customer_data_tbl <- customer_data_tbl %>%
 
 str(customer_data_tbl)
 ```
+
+
 ```{r}
 customer_data_tbl %>%
   summarise(
@@ -49,7 +53,6 @@ customer_data_tbl %>%
 
 ```{r}
 library(ggplot2)
-
 # Plotting income distribution by gender
 ggplot(customer_data_tbl, aes(x = income, fill = gender)) +
   geom_histogram(bins=10, alpha=0.7, color="black") +
@@ -75,37 +78,6 @@ ggplot(customer_data_tbl, aes(x = product_category, y = purchase_amount, fill = 
 
 ```
 
-- $H_0: There is no difference in satisfaction scores between different loyalty status groups.$
-
-- $H_a: There is a difference in satisfaction scores between different loyalty status groups.$
-
-```{r}
-anova_result <- aov(satisfaction_score ~ loyalty_status, data = customer_data_tbl)
-summary(anova_result)
-
-plot(anova_result)
-```
-- $H_0: There is no relationship between income and the purchase amount of customers.$
-
-- $H_a: Higher income customers spend more on purchases than lower income customers.$
-```{r}
-anova_result1 <- aov(income ~ purchase_amount, data = customer_data_tbl)
-summary(anova_result1)
-
-plot(anova_result1)
-```
-
-- $H_0: The product category does not influence the average purchase amount..$
-
-- $H_a: The product category influences the average purchase amount.$
-
-```{r}
-anova_result2 <- aov(purchase_amount ~ product_category, data = customer_data_tbl)
-summary(anova_result2)
-
-plot(anova_result2)
-```
-
 
 ```{r}
 library(data.table)
@@ -118,27 +90,40 @@ customer[, .(id, age, gender, education, region)]
 
 
 ```{r}
-customer_list<-list(customer)
-map_int(customer_list,nrow)
-map_int(customer, ~length(unique(.)))
-customer[, .(id, age, gender,income, education, region,purchase_frequency,purchase_amount)]
-```
-
-
-```{r}
-customer$income<- as.numeric(as.character(customer$income))
-mean_income<-mean(customer$income, na.rm = TRUE)
-cat("Income Mean:", mean_income, "\n")
-customer$purchase_amount<-as.numeric(as.character(customer$purchase_amount))
-mean_purchase<-mean(customer$purchase_amount, na.rm = TRUE)
-cat("Purchase Mean:", mean_purchase, "\n")
-```
-
-
-```{r}
 customer_master<-customer[education=="Masters"]
 customer_master
 customer_master[, .(gender, income, purchase_amount)][income >27516.27 & purchase_amount > 9634.791 & gender == "Female"]
 ```
+
+
+- $H_0: There is no difference in satisfaction scores between different loyalty status groups.$
+
+- $H_a: There is a difference in satisfaction scores between different loyalty status groups.$
+
+```{r}
+anova_result <- aov(satisfaction_score ~ loyalty_status, data = customer_data_tbl)
+summary(anova_result)
+```
+- $H_0: There is no relationship between income and the purchase amount of customers.$
+
+- $H_a: Higher income customers spend more on purchases than lower income customers.$
+
+```{r}
+anova_result1 <- aov(income ~ purchase_amount, data = customer_data_tbl)
+summary(anova_result1)
+```
+
+
+- $H_0: The product category does not influence the average purchase amount..$
+
+- $H_a: The product category influences the average purchase amount.$
+
+```{r}
+anova_result2 <- aov(purchase_amount ~ product_category, data = customer_data_tbl)
+summary(anova_result2)
+```
+
+
+
 
 
